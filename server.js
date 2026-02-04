@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
 const googleRoutes = require("./routes/googleRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
@@ -23,6 +24,8 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 
 app.use("/api/auth", googleRoutes);
+
+app.use("/api/users", userRoutes);
 
 // TEMPORARY: no error handler at all
 const PORT = process.env.PORT || 5000;
