@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
+const googleRoutes = require("./routes/googleRoutes");
 
 const app = express();
 
@@ -20,6 +21,8 @@ app.get("/", (req, res) => {
 
 // auth routes
 app.use("/api/auth", authRoutes);
+
+app.use("/api/auth", googleRoutes);
 
 // TEMPORARY: no error handler at all
 const PORT = process.env.PORT || 5000;
