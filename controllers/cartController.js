@@ -17,6 +17,24 @@ const calculateTotals = (items) => {
     return { subtotal, shipping, tax, discount, total };
 };
 
+const applyPromoDiscount = (code, subtotal) => {
+    let discount = 0;
+
+    if (code === "WELCOME15") {
+        discount = subtotal * 0.15; // 15% off
+    } else if (code === "SAVE10") {
+        discount = subtotal * 0.10; // 10% off
+    } else if (code === "FREESHIP") {
+        // We'll handle free shipping separately
+        return { discount: 0, freeShipping: true };
+    } else {
+        return { discount: 0, invalid: true };
+    }
+
+    return { discount, freeShipping: false };
+};
+
+
 // GET cart of logged-in user
 exports.getCart = async (req, res) => {
     try {
@@ -171,6 +189,48 @@ exports.clearCart = async (req, res) => {
         );
 
         res.json({ message: "Cart cleared" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+exports.applyCoupon = async (req, res) => {
+    try {
+        const { code } = req.body;
+
+        const cart = await Cart.findOne({ userId: req.user._id });
+        if (!cart) {
+            return res.status(404).json({ message: "Cart not found" });
+        }
+
+        const subtotal = cart.subtotal;
+
+        const result = applyPromoDiscount(code, subtotal);
+
+        if (result.invalid) {
+            return res.status(400).json({ message: "Invalid promo code" });
+        }
+
+        // Recalculate totals
+        const shipping =
+            result.freeShipping || subtotal >= 50 ? 0 : 5;
+
+        const tax = subtotal * 0.10;
+        const discount = result.discount;
+        const total = subtotal + shipping + tax - discount;
+
+        cart.shipping = shipping;
+        cart.tax = tax;
+        cart.discount = discount;
+        cart.total = total;
+
+        await cart.save();
+
+        res.json({
+            message: "Promo applied",
+            cart,
+        });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
