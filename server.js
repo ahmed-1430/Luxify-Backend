@@ -7,6 +7,7 @@ const authRoutes = require("./routes/authRoutes");
 const googleRoutes = require("./routes/googleRoutes");
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
 
 const app = express();
 
@@ -18,10 +19,10 @@ connectDB();
 
 // simple health check
 app.get("/", (req, res) => {
-  res.send("Luxify Backend Running...");
+    res.send("Luxify Backend Running...");
 });
 
-// auth routes
+// routes
 app.use("/api/auth", authRoutes);
 
 app.use("/api/auth", googleRoutes);
@@ -29,6 +30,8 @@ app.use("/api/auth", googleRoutes);
 app.use("/api/users", userRoutes);
 
 app.use("/api/products", productRoutes);
+
+app.use("/api/upload", uploadRoutes);
 
 // TEMPORARY: no error handler at all
 const PORT = process.env.PORT || 5000;
