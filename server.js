@@ -9,6 +9,7 @@ const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
+const cartRoutes = require("./routes/cartRoutes");
 
 const app = express();
 
@@ -35,6 +36,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/upload", uploadRoutes);
 
 app.use("/api/reviews", reviewRoutes);
+
+app.use("/api/cart", cartRoutes);
 
 // TEMPORARY: no error handler at all
 const PORT = process.env.PORT || 5000;
