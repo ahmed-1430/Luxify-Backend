@@ -8,6 +8,7 @@ const googleRoutes = require("./routes/googleRoutes");
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
 
 const app = express();
 
@@ -32,6 +33,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 
 app.use("/api/upload", uploadRoutes);
+
+app.use("/api/reviews", reviewRoutes);
 
 // TEMPORARY: no error handler at all
 const PORT = process.env.PORT || 5000;
