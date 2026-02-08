@@ -13,6 +13,7 @@ const cartRoutes = require("./routes/cartRoutes");
 const checkoutRoutes = require("./routes/checkoutRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
+const adminProductRoutes = require("./routes/adminProductRoutes");
 
 const app = express();
 
@@ -47,6 +48,8 @@ app.use("/api/checkout", checkoutRoutes);
 app.use("/api/orders", orderRoutes);
 
 app.use("/api/categories", categoryRoutes);
+
+app.use("/api/admin/products", adminProductRoutes);
 
 // TEMPORARY: no error handler at all
 const PORT = process.env.PORT || 5000;
