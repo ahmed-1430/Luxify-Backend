@@ -13,7 +13,7 @@ exports.createProduct = async (req, res) => {
 // GET ALL PRODUCTS (Public)
 exports.getProducts = async (req, res) => {
     try {
-        const { search, category, minPrice, maxPrice, page = 1, limit = 10 } =
+        const { search, category, featured, minPrice, maxPrice, page = 1, limit = 10 } =
             req.query;
 
         const query = {};
@@ -24,6 +24,10 @@ exports.getProducts = async (req, res) => {
 
         if (category) {
             query.category = category;
+        }
+
+        if (featured === "true") {
+            query.featured = true;
         }
 
         if (minPrice || maxPrice) {
