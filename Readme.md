@@ -7,10 +7,11 @@
 
 # 🌍 Base URL
 
-### Development
+## Development
+http://localhost:5000/api
 
+## Production
 https://luxify-backend-blue.vercel.app/api
-
 
 ---
 
@@ -18,15 +19,11 @@ https://luxify-backend-blue.vercel.app/api
 
 All protected routes require:
 
-
-
 Authorization: Bearer <JWT_TOKEN>
 
-
-
 JWT is returned from:
-- `/auth/login`
-- `/auth/google`
+- POST /auth/login
+- POST /auth/google
 
 ---
 
@@ -36,18 +33,16 @@ JWT is returned from:
 
 ## 🔹 Register
 
-**POST** `/auth/register`
+POST /auth/register
 
 ### Body
-```json
 {
   "name": "Ahmed",
   "email": "ahmed@gmail.com",
   "password": "123456"
 }
 
-
-Response
+### Response
 {
   "message": "User registered successfully",
   "user": {
@@ -57,15 +52,19 @@ Response
   }
 }
 
+---
 
-Login
+## 🔹 Login
+
 POST /auth/login
+
+### Body
 {
   "email": "ahmed@gmail.com",
   "password": "123456"
 }
 
-Response
+### Response
 {
   "token": "JWT_TOKEN",
   "user": {
@@ -74,66 +73,91 @@ Response
   }
 }
 
-Google Login
+---
+
+## 🔹 Google Login
+
 POST /auth/google
+
+### Body
 {
   "idToken": "GOOGLE_ID_TOKEN"
 }
 
-
 Returns same structure as login.
 
-🛍 Products API
-Get All Products
+---
+
+# 🛍 Products APIs
+
+---
+
+## 🔹 Get All Products
+
 GET /products
-Query Parameters
-Param	Example
-search	?search=iphone
-category	?category=Mobiles
-featured	?featured=true
-minPrice	?minPrice=100
-maxPrice	?maxPrice=1000
-page	?page=1
-limit	?limit=10
-Get Single Product
+
+### Query Parameters
+
+- search=iphone
+- category=Mobiles
+- featured=true
+- minPrice=100
+- maxPrice=1000
+- page=1
+- limit=10
+
+Example:
+GET /products?featured=true&limit=8
+
+---
+
+## 🔹 Get Single Product
+
 GET /products/:id
 
 Returns:
+- images (main + gallery)
+- features
+- specifications
+- rating
+- reviews
+- reviewsCount
+- featured
 
-images
+---
 
-features
+# ⭐ Reviews
 
-specifications
+---
 
-rating
+## 🔹 Add Review
 
-reviews
-
-reviewsCount
-
-⭐ Reviews
-Add Review
 POST /reviews/:productId
 
-Auth Required
+🔒 Authentication Required
 
+Body:
 {
   "rating": 5,
   "comment": "Amazing product!"
 }
 
-
 Rules:
+- One review per user per product
 
-One review per user per product
+---
 
-🛒 Cart APIs
+# 🛒 Cart APIs
 
-All require authentication.
+🔒 All require authentication
 
-Get Cart
+---
+
+## 🔹 Get Cart
+
 GET /cart
+
+Response:
 {
   "items": [],
   "subtotal": 600,
@@ -143,122 +167,174 @@ GET /cart
   "total": 660
 }
 
-Add to Cart
+---
+
+## 🔹 Add to Cart
+
 POST /cart
+
 {
   "productId": "PRODUCT_ID",
   "quantity": 2
 }
 
-Update Quantity
+---
+
+## 🔹 Update Quantity
+
 PUT /cart
+
 {
   "productId": "PRODUCT_ID",
   "quantity": 5
 }
 
-Remove Item
+---
+
+## 🔹 Remove Item
+
 DELETE /cart/:productId
-Clear Cart
+
+---
+
+## 🔹 Clear Cart
+
 DELETE /cart
-Apply Promo Code
+
+---
+
+## 🔹 Apply Promo Code
+
 POST /cart/apply-coupon
+
 {
   "code": "WELCOME15"
 }
 
-
 Supported codes:
+- WELCOME15 (15% discount)
+- SAVE10 (10% discount)
+- FREESHIP (Free shipping)
 
-WELCOME15
+---
 
-SAVE10
+# 💳 Checkout (Stripe)
 
-FREESHIP
+---
 
-💳 Checkout (Stripe)
-Create Payment Intent
+## 🔹 Create Payment Intent
+
 POST /checkout/create-payment-intent
 
 Response:
-
 {
   "clientSecret": "pi_xxx_secret_xxx",
   "cartTotal": 670.96
 }
 
-Frontend Stripe Flow
+### Frontend Stripe Flow
 
-Call create-payment-intent
+1. Call /checkout/create-payment-intent
+2. Use clientSecret with stripe.confirmPayment()
+3. DO NOT create order manually
+4. Order is created automatically via Stripe Webhook
 
-Use clientSecret with stripe.confirmPayment()
+---
 
-DO NOT create order manually
+# 📦 Orders
 
-Order is created automatically via webhook
+---
 
-📦 Orders
-My Orders
+## 🔹 My Orders
+
 GET /orders/my-orders
-Order Details
-GET /orders/:id
-👨‍💼 Admin APIs
 
-Require:
+---
+
+## 🔹 Order Details
+
+GET /orders/:id
+
+---
+
+# 👨‍💼 Admin APIs
+
+🔒 Require Admin JWT
 
 Authorization: Bearer ADMIN_JWT
 
-🛍 Admin Products
-Method	Endpoint
-POST	/admin/products
-PUT	/admin/products/:id
-DELETE	/admin/products/:id
-PATCH	/admin/products/featured/:id
-👥 Admin Users
-Method	Endpoint
-GET	/admin/users
-PATCH	/admin/users/block/:id
-PATCH	/admin/users/role/:id
-📦 Admin Orders
-Method	Endpoint
-GET	/orders/admin/all
-PUT	/orders/admin/status/:id
+---
+
+# 🛍 Admin Products
+
+POST   /admin/products  
+PUT    /admin/products/:id  
+DELETE /admin/products/:id  
+PATCH  /admin/products/featured/:id  
+
+---
+
+# 👥 Admin Users
+
+GET   /admin/users  
+PATCH /admin/users/block/:id  
+PATCH /admin/users/role/:id  
+
+---
+
+# 📦 Admin Orders
+
+GET /orders/admin/all  
+
+PUT /orders/admin/status/:id  
 
 Order status values:
+- processing
+- shipped
+- delivered
 
-processing
+---
 
-shipped
+# 📊 Analytics (Admin Only)
 
-delivered
+GET /analytics/dashboard  
+GET /analytics/daily-sales  
+GET /analytics/top-products  
+GET /analytics/recent-orders  
 
-📊 Analytics (Admin Only)
-Endpoint	Purpose
-GET /analytics/dashboard	Revenue + stats
-GET /analytics/daily-sales	Sales chart
-GET /analytics/top-products	Top 5 products
-GET /analytics/recent-orders	Latest 10 orders
-🖼 Image Upload (Admin Only)
-Upload Single Image
-POST /upload/single
+---
+
+# 🖼 Image Upload (Admin Only)
+
+---
+
+## 🔹 Upload Single Image
+
+POST /upload/single  
 
 Form-data:
-
 image: File
 
-Upload Multiple Images
-POST /upload/multiple
+---
+
+## 🔹 Upload Multiple Images
+
+POST /upload/multiple  
 
 Form-data:
-
 images: File[]
 
-⚙️ Role-Based Access
-Role	Access
-customer	shop + cart + orders
-admin	full dashboard
-staff	(limited admin if configured)
-🚨 Error Format
+---
+
+# 🔐 Role-Based Access
+
+customer → shop + cart + orders  
+admin → full dashboard  
+staff → limited admin (if configured)
+
+---
+
+# 🚨 Error Response Format
 
 Errors may return:
 
@@ -266,48 +342,39 @@ Errors may return:
   "error": "Something went wrong"
 }
 
-
 OR
 
 {
   "message": "Validation error"
 }
 
+Frontend should handle both formats.
 
-Frontend should handle both.
+---
 
-🧠 Frontend Developer Notes
+# 🧠 Important Notes for Frontend Developer
 
-Always include Authorization header for protected routes.
+- Always include Authorization header for protected routes.
+- Stripe webhook automatically creates orders.
+- Do NOT create orders manually from frontend.
+- Cart totals (tax, shipping, discount) are calculated by backend.
+- Featured products endpoint:
+  GET /products?featured=true
 
-Stripe webhook automatically creates orders.
+---
 
-Do NOT create orders manually from frontend.
+# ✅ Backend Features Completed
 
-Cart totals (tax, shipping, discount) are calculated by backend.
+✔ Email & Google Authentication  
+✔ Product Management  
+✔ Reviews System  
+✔ Cart with Tax & Shipping  
+✔ Promo Codes  
+✔ Stripe Payments  
+✔ Stripe Webhook Automation  
+✔ Orders  
+✔ Admin Dashboard  
+✔ Analytics  
 
-Featured products can be fetched via:
+---
 
-GET /products?featured=true
-
-✅ Backend Feature Status
-
-✔ Email & Google Authentication
-
-✔ Product Management
-
-✔ Reviews System
-
-✔ Cart with Tax & Shipping
-
-✔ Promo Codes
-
-✔ Stripe Payments
-
-✔ Stripe Webhook Automation
-
-✔ Orders
-
-✔ Admin Dashboard
-
-✔ Analytics
