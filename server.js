@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const webhookRoutes = require("./routes/webhookRoutes");
 
 const authRoutes = require("./routes/authRoutes");
 const googleRoutes = require("./routes/googleRoutes");
@@ -57,6 +58,9 @@ app.use("/api/admin/users", adminUserRoutes);
 
 app.use("/api/analytics", analyticsRoutes);
 
+app.use("/api/webhooks", webhookRoutes);
+
 // TEMPORARY: no error handler at all
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+module.exports= app;
