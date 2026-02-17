@@ -1,33 +1,51 @@
-🛒 Luxify E-Commerce API Documentation
+# 🛒 Luxify E-Commerce API Documentation
 
-Backend Status: Production Ready (Stripe + Webhooks Enabled)
-Base Architecture: REST + JWT + Stripe + Cloudinary
+> Backend Status: Production Ready  
+> Stack: Express + MongoDB + JWT + Stripe + Cloudinary  
 
-🌍 Base URL
-Development
+---
+
+# 🌍 Base URL
+
+### Development
+
 https://luxify-backend-blue.vercel.app/api
 
-🔐 Authentication
+
+---
+
+# 🔐 Authentication
 
 All protected routes require:
+
+
 
 Authorization: Bearer <JWT_TOKEN>
 
 
+
 JWT is returned from:
+- `/auth/login`
+- `/auth/google`
 
-/auth/login
+---
 
-/auth/google
+# 👤 Authentication APIs
 
-👤 Authentication APIs
-Register
-POST /auth/register
+---
+
+## 🔹 Register
+
+**POST** `/auth/register`
+
+### Body
+```json
 {
   "name": "Ahmed",
   "email": "ahmed@gmail.com",
   "password": "123456"
 }
+
 
 Response
 {
@@ -38,6 +56,7 @@ Response
     "role": "customer"
   }
 }
+
 
 Login
 POST /auth/login
